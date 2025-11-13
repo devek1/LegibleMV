@@ -40,10 +40,14 @@ public class Main {
 		
 		// Dump In Stars And Time
 		// Just like change these to whatever game(s)
-		LegibleMV game = new LegibleMV("C:\\Program Files (x86)\\Steam\\steamapps\\common\\In Stars And Time");
-		LegibleMV old = new LegibleMV("C:\\Program Files (x86)\\Steam\\steamapps\\content\\app_1677310\\depot_1677311");
-		dump(game, new File("1.0.6.3"));
-		dump(old, new File("1.0.3"));
+		//LegibleMV game = new LegibleMV("C:\\Program Files (x86)\\Steam\\steamapps\\common\\In Stars And Time");
+		//LegibleMV old = new LegibleMV("C:\\Program Files (x86)\\Steam\\steamapps\\content\\app_1677310\\depot_1677311");
+		//dump(game, new File("1.0.6.3"));
+		//dump(old, new File("1.0.3"));
+		//LegibleMV nemuri = new LegibleMV("/home/devek1/hdd1/Games/RPG Maker MV/OMORI NEMURI Mod");
+		//dump(nemuri, new File("OMORI Nemuri Mod"));
+		LegibleMV game = new LegibleMV(args[0]);
+		dump(game, new File(args[1]));
 	}
 	
 	private static void dump(LegibleMV game, File base) throws Exception {
@@ -189,11 +193,18 @@ public class Main {
 		}
 		
 		JSONArray infos = game.mapinfo(), events;
+		int mapCount = infos.length();
 		JSONObject map;
 		File mapEventFolder;
-		for(int i = 1; i < infos.length(); i++) {
+		for(int i = 1; i < mapCount && i < 1000; i++) {
 			if(infos.get(i) instanceof JSONObject info) {
-				map = game.getMap(i);
+				try {
+					map = game.getMap(i);
+				}
+				catch (Exception e) {
+					mapCount++;
+					continue;
+				}
 				events = map.getJSONArray("events");
 				mapEventFolder = new File(mapFolder, String.format("%d_%s", i, FORBIDDEN.matcher(info.getString("name")).replaceAll("_")));
 				if(!mapEventFolder.exists()) {

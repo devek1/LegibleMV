@@ -240,11 +240,11 @@ public class LegibleMV {
 	}
 	
 	public JSONArray readJSONArray(String file) throws Exception {
-		return new JSONArray(Files.readString(Path.of(baseFolder.getAbsolutePath(), "www", "data", file + ".json")));
+		return new JSONArray(Files.readString(Path.of(baseFolder.getAbsolutePath(), "data", file + ".json")));
 	}
 	
 	public JSONObject readJSONObject(String file) throws Exception {
-		return new JSONObject(Files.readString(Path.of(baseFolder.getAbsolutePath(), "www", "data", file + ".json")));
+		return new JSONObject(Files.readString(Path.of(baseFolder.getAbsolutePath(), "data", file + ".json")));
 	}
 	
 	public String getVariableFormatted(int index) {
@@ -437,7 +437,12 @@ public class LegibleMV {
 		case 121: {
 			String switches;
 			if(params.getInt(0) == params.getInt(1)) {
-				switches = getSwitchFormatted(params.getInt(0));
+				try {
+					switches = getSwitchFormatted(params.getInt(0));
+				}
+				catch (Exception e) {
+					switches = "<switch number " + params.getInt(0) + ">";
+				}
 			}
 			else {
 				switches = String.format("#%04d..#%04d", params.get(0), params.get(1));
@@ -449,7 +454,12 @@ public class LegibleMV {
 		case 122: {
 			String left, operation, right;
 			if(params.getInt(0) == params.getInt(1)) {
-				left = getVariableFormatted(params.getInt(0));
+				try {
+					left = getVariableFormatted(params.getInt(0));
+				}
+				catch (Exception e) {
+					left = "<variable number " + params.getInt(0) + ">";
+				}
 			}
 			else {
 				left = String.format("#%04d..#%04d", params.get(0), params.get(1));
@@ -512,7 +522,12 @@ public class LegibleMV {
 			}
 			else if(mapID > 0) {
 				JSONArray events = getMap(mapID).getJSONArray("events");
-				out.append(events.getJSONObject(target).getString("name"));
+				try {
+					out.append(events.getJSONObject(target).getString("name"));
+				}
+				catch (Exception e) {
+					out.append("<target number: " + target + ">");
+				}
 			}
 			else {
 				out.append(String.format("NOCTX_EV%03d", target));
