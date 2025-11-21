@@ -37,7 +37,12 @@ public class Main {
 			return;
 		}*/
 		
-		
+		if (args.length < 2)
+		{
+			System.out.print("Usage: LegibleMV [input path] [output path]\n");
+			return;
+		}
+
 		// Dump game from first CLI argument to directory from second CLI argument
 		// (first argument should point to the folder that contains "data", "js", etc. subdirectories - meaning the www folder for a normal compiled RMMV game [not encrypted OMORI!], project root for an RMMV editor project, or www_playtest_[hash] for OMORI decrypted by OneLoader)
 		LegibleMV game = new LegibleMV(args[0]);
