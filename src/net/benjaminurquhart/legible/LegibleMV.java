@@ -248,10 +248,16 @@ public class LegibleMV {
 	}
 	
 	public String getVariableFormatted(int index) {
+		if (index >= variables.length) {
+			return "<invalid variable - #" + index + ">";
+		}
 		return String.format("#%04d %s", index, variables[index]);
 	}
 	
 	public String getSwitchFormatted(int index) {
+		if (index >= switches.length) {
+			return "<invalid switch - #" + index + ">";
+		}
 		return String.format("#%04d %s", index, switches[index]);
 	}
 	
@@ -437,12 +443,7 @@ public class LegibleMV {
 		case 121: {
 			String switches;
 			if(params.getInt(0) == params.getInt(1)) {
-				try {
-					switches = getSwitchFormatted(params.getInt(0));
-				}
-				catch (Exception e) {
-					switches = "<switch number " + params.getInt(0) + ">";
-				}
+				switches = getSwitchFormatted(params.getInt(0));
 			}
 			else {
 				switches = String.format("#%04d..#%04d", params.get(0), params.get(1));
@@ -454,12 +455,7 @@ public class LegibleMV {
 		case 122: {
 			String left, operation, right;
 			if(params.getInt(0) == params.getInt(1)) {
-				try {
-					left = getVariableFormatted(params.getInt(0));
-				}
-				catch (Exception e) {
-					left = "<variable number " + params.getInt(0) + ">";
-				}
+				left = getVariableFormatted(params.getInt(0));
 			}
 			else {
 				left = String.format("#%04d..#%04d", params.get(0), params.get(1));

@@ -38,19 +38,13 @@ public class Main {
 		}*/
 		
 		
-		// Dump In Stars And Time
-		// Just like change these to whatever game(s)
-		//LegibleMV game = new LegibleMV("C:\\Program Files (x86)\\Steam\\steamapps\\common\\In Stars And Time");
-		//LegibleMV old = new LegibleMV("C:\\Program Files (x86)\\Steam\\steamapps\\content\\app_1677310\\depot_1677311");
-		//dump(game, new File("1.0.6.3"));
-		//dump(old, new File("1.0.3"));
-		//LegibleMV nemuri = new LegibleMV("/home/devek1/hdd1/Games/RPG Maker MV/OMORI NEMURI Mod");
-		//dump(nemuri, new File("OMORI Nemuri Mod"));
+		// Dump game from first CLI argument to directory from second CLI argument
+		// (first argument should point to the folder that contains "data", "js", etc. subdirectories - meaning the www folder for a normal compiled RMMV game [not encrypted OMORI!], project root for an RMMV editor project, or www_playtest_[hash] for OMORI decrypted by OneLoader)
 		LegibleMV game = new LegibleMV(args[0]);
-		dump(game, new File(args[1]));
+		dump(game, new File(args[1]), args[0]);
 	}
 	
-	private static void dump(LegibleMV game, File base) throws Exception {
+	private static void dump(LegibleMV game, File base, String gameFolder) throws Exception {
 		
 		if(!base.exists()) {
 			base.mkdirs();
@@ -194,17 +188,18 @@ public class Main {
 		
 		JSONArray infos = game.mapinfo(), events;
 		int mapCount = infos.length();
+		int _mapsLoaded = 0;
 		JSONObject map;
 		File mapEventFolder;
-		for(int i = 1; i < mapCount && i < 1000; i++) {
+		for(int i = 1; _mapsLoaded < mapCount && i < 1000; i++) {
 			if(infos.get(i) instanceof JSONObject info) {
-				try {
-					map = game.getMap(i);
-				}
-				catch (Exception e) {
-					mapCount++;
+				if (Files.notExists(Path.of(gameFolder, "data", String.format("Map%03d", i) + ".json")))
+				{
+					System.out.print("No map with ID " + i + "\n");
 					continue;
 				}
+				map = game.getMap(i);
+				_mapsLoaded++;
 				events = map.getJSONArray("events");
 				mapEventFolder = new File(mapFolder, String.format("%d_%s", i, FORBIDDEN.matcher(info.getString("name")).replaceAll("_")));
 				if(!mapEventFolder.exists()) {
